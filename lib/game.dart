@@ -12,7 +12,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  bool oTurn = true;
+  bool oTurn = true; // first player is O
   List<String> displayXO = ['', '', '', '', '', '', '', '', ''];
   List<int> matchedIndexes = [];
   int attempts = 0;
@@ -64,41 +64,7 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Player O',
-                          style: customFontWhite,
-                        ),
-                        Text(
-                          oScore.toString(),
-                          style: customFontWhite,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 20),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Player X',
-                          style: customFontWhite,
-                        ),
-                        Text(
-                          xScore.toString(),
-                          style: customFontWhite,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              const Spacer(),
               Expanded(
                 flex: 3,
                 child: GridView.builder(
@@ -158,27 +124,30 @@ class _GameScreenState extends State<GameScreen> {
   void _tapped(int index) {
     final isRunning = timer == null ? false : timer!.isActive;
 
-    if (isRunning) {
+    if (isRunning && displayXO[index] == '') {
       setState(() {
-        if (oTurn && displayXO[index] == '') {
-          displayXO[index] = 'O';
-          filledBoxes++;
-        } else if (!oTurn && displayXO[index] == '') {
-          displayXO[index] = 'X';
-          filledBoxes++;
-        }
-
+        displayXO[index] = oTurn ? 'O' : 'X';
+        filledBoxes++;
         oTurn = !oTurn;
-        _checkWinner();
+        if (!_checkWinner()) return;
+
+        // AI makes a move if it's X's turn
+        if (!oTurn && !winnerFound) {
+          int bestMove = findBestMove(displayXO);
+          displayXO[bestMove] = 'X';
+          filledBoxes++;
+          oTurn = !oTurn;
+          _checkWinner();
+        }
       });
     }
   }
 
-  void _checkWinner() {
+  bool _checkWinner() {
     // check 1st row
     if (displayXO[0] == displayXO[1] && displayXO[0] == displayXO[2] && displayXO[0] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[0]} Wins!';
         matchedIndexes.addAll([0, 1, 2]);
         stopTimer();
         _updateScore(displayXO[0]);
@@ -188,7 +157,7 @@ class _GameScreenState extends State<GameScreen> {
     // check 2nd row
     if (displayXO[3] == displayXO[4] && displayXO[3] == displayXO[5] && displayXO[3] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[3] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[3]} Wins!';
         matchedIndexes.addAll([3, 4, 5]);
         stopTimer();
         _updateScore(displayXO[3]);
@@ -198,7 +167,7 @@ class _GameScreenState extends State<GameScreen> {
     // check 3rd row
     if (displayXO[6] == displayXO[7] && displayXO[6] == displayXO[8] && displayXO[6] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[6] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[6]} Wins!';
         matchedIndexes.addAll([6, 7, 8]);
         stopTimer();
         _updateScore(displayXO[6]);
@@ -208,7 +177,7 @@ class _GameScreenState extends State<GameScreen> {
     // check 1st column
     if (displayXO[0] == displayXO[3] && displayXO[0] == displayXO[6] && displayXO[0] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[0]} Wins!';
         matchedIndexes.addAll([0, 3, 6]);
         stopTimer();
         _updateScore(displayXO[0]);
@@ -218,7 +187,7 @@ class _GameScreenState extends State<GameScreen> {
     // check 2nd column
     if (displayXO[1] == displayXO[4] && displayXO[1] == displayXO[7] && displayXO[1] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[1] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[1]} Wins!';
         matchedIndexes.addAll([1, 4, 7]);
         stopTimer();
         _updateScore(displayXO[1]);
@@ -228,7 +197,7 @@ class _GameScreenState extends State<GameScreen> {
     // check 3rd column
     if (displayXO[2] == displayXO[5] && displayXO[2] == displayXO[8] && displayXO[2] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[2] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[2]} Wins!';
         matchedIndexes.addAll([2, 5, 8]);
         stopTimer();
         _updateScore(displayXO[2]);
@@ -238,7 +207,7 @@ class _GameScreenState extends State<GameScreen> {
     // check diagonal
     if (displayXO[0] == displayXO[4] && displayXO[0] == displayXO[8] && displayXO[0] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[0]} Wins!';
         matchedIndexes.addAll([0, 4, 8]);
         stopTimer();
         _updateScore(displayXO[0]);
@@ -248,7 +217,7 @@ class _GameScreenState extends State<GameScreen> {
     // check diagonal
     if (displayXO[6] == displayXO[4] && displayXO[6] == displayXO[2] && displayXO[6] != '') {
       setState(() {
-        resultDeclaration = 'Player ' + displayXO[6] + ' Wins!';
+        resultDeclaration = 'Player ${displayXO[6]} Wins!';
         matchedIndexes.addAll([6, 4, 2]);
         stopTimer();
         _updateScore(displayXO[6]);
@@ -258,7 +227,9 @@ class _GameScreenState extends State<GameScreen> {
       setState(() {
         resultDeclaration = 'Nobody Wins!';
       });
+      return false;
     }
+    return true;
   }
 
   void _updateScore(String winner) {
@@ -314,6 +285,15 @@ class _GameScreenState extends State<GameScreen> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
             onPressed: () {
+              if (attempts != 0) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GameScreen(),
+                  ),
+                );
+                return;
+              }
               startTimer();
               _clearBoard();
               attempts++;
@@ -324,4 +304,83 @@ class _GameScreenState extends State<GameScreen> {
             ),
           );
   }
+
+  int minimax(List<String> board, int depth, bool isMaximizing, int alpha, int beta) {
+    String winner = _checkWinnerForAI(board);
+    if (winner == 'O') return -10;
+    if (winner == 'X') return 10;
+    if (!board.contains('')) return 0;
+
+    if (isMaximizing) {
+      int bestScore = -1000;
+      for (int i = 0; i < 9; i++) {
+        if (board[i] == '') {
+          board[i] = 'X';
+          int score = minimax(board, depth + 1, false, alpha, beta);
+          board[i] = '';
+          bestScore = max(bestScore, score);
+          alpha = max(alpha, score);
+          if (beta <= alpha) break; // Beta cut-off
+        }
+      }
+      return bestScore;
+    } else {
+      int bestScore = 1000;
+      for (int i = 0; i < 9; i++) {
+        if (board[i] == '') {
+          board[i] = 'O';
+          int score = minimax(board, depth + 1, true, alpha, beta);
+          board[i] = '';
+          bestScore = min(bestScore, score);
+          beta = min(beta, score);
+          if (beta <= alpha) break; // Alpha cut-off
+        }
+      }
+      return bestScore;
+    }
+  }
+
+  String _checkWinnerForAI(List<String> board) {
+    // Rows
+    for (int i = 0; i < 3; i++) {
+      if (board[3 * i] != '' && board[3 * i] == board[3 * i + 1] && board[3 * i] == board[3 * i + 2]) {
+        return board[3 * i];
+      }
+    }
+    // Columns
+    for (int i = 0; i < 3; i++) {
+      if (board[i] != '' && board[i] == board[i + 3] && board[i] == board[i + 6]) {
+        return board[i];
+      }
+    }
+    // Diagonals
+    if (board[0] != '' && board[0] == board[4] && board[0] == board[8]) {
+      return board[0];
+    }
+    if (board[2] != '' && board[2] == board[4] && board[2] == board[6]) {
+      return board[2];
+    }
+    return '';
+  }
+
+  int findBestMove(List<String> board) {
+    int bestScore = -1000;
+    int move = -1;
+    for (int i = 0; i < 9; i++) {
+      if (board[i] == '') {
+        board[i] = 'X';
+        int score = minimax(board, 0, false, -1000, 1000);
+        board[i] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
+      }
+    }
+    return move;
+  }
+
+  int max(int a, int b) => (a > b) ? a : b;
+
+  int min(int a, int b) => (a < b) ? a : b;
 }

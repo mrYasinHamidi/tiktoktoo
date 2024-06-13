@@ -58,99 +58,98 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MainColor.primaryColor,
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Player O',
-                        style: customFontWhite,
-                      ),
-                      Text(
-                        oScore.toString(),
-                        style: customFontWhite,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 20),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Player X',
-                        style: customFontWhite,
-                      ),
-                      Text(
-                        xScore.toString(),
-                        style: customFontWhite,
-                      ),
-                    ],
-                  ),
-                ],
-              )),
-            ),
-            Expanded(
-              flex: 3,
-              child: GridView.builder(
-                  itemCount: 9,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        _tapped(index);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            width: 5,
-                            color: MainColor.primaryColor,
-                          ),
-                          color: matchedIndexes.contains(index)
-                              ? MainColor.accentColor
-                              : MainColor.secondaryColor,
-                        ),
-                        child: Center(
-                          child: Text(
-                            displayXO[index],
-                            style: GoogleFonts.coiny(
-                                textStyle: TextStyle(
-                              fontSize: 64,
-                              color: matchedIndexes.contains(index)
-                                  ? MainColor.secondaryColor
-                                  : MainColor.primaryColor,
-                            )),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-            ),
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: Column(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(resultDeclaration, style: customFontWhite),
-                    const SizedBox(height: 10),
-                    _buildTimer()
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Player O',
+                          style: customFontWhite,
+                        ),
+                        Text(
+                          oScore.toString(),
+                          style: customFontWhite,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 20),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Player X',
+                          style: customFontWhite,
+                        ),
+                        Text(
+                          xScore.toString(),
+                          style: customFontWhite,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 3,
+                child: GridView.builder(
+                    itemCount: 9,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          _tapped(index);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              width: 5,
+                              color: MainColor.primaryColor,
+                            ),
+                            color: matchedIndexes.contains(index) ? MainColor.accentColor : MainColor.secondaryColor,
+                          ),
+                          child: Center(
+                            child: Text(
+                              displayXO[index],
+                              style: GoogleFonts.coiny(
+                                  textStyle: TextStyle(
+                                fontSize: 64,
+                                color:
+                                    matchedIndexes.contains(index) ? MainColor.secondaryColor : MainColor.primaryColor,
+                              )),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+              Expanded(
+                flex: 2,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(resultDeclaration, style: customFontWhite),
+                      const SizedBox(height: 10),
+                      _buildTimer()
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -177,9 +176,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void _checkWinner() {
     // check 1st row
-    if (displayXO[0] == displayXO[1] &&
-        displayXO[0] == displayXO[2] &&
-        displayXO[0] != '') {
+    if (displayXO[0] == displayXO[1] && displayXO[0] == displayXO[2] && displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
         matchedIndexes.addAll([0, 1, 2]);
@@ -189,9 +186,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check 2nd row
-    if (displayXO[3] == displayXO[4] &&
-        displayXO[3] == displayXO[5] &&
-        displayXO[3] != '') {
+    if (displayXO[3] == displayXO[4] && displayXO[3] == displayXO[5] && displayXO[3] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[3] + ' Wins!';
         matchedIndexes.addAll([3, 4, 5]);
@@ -201,9 +196,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check 3rd row
-    if (displayXO[6] == displayXO[7] &&
-        displayXO[6] == displayXO[8] &&
-        displayXO[6] != '') {
+    if (displayXO[6] == displayXO[7] && displayXO[6] == displayXO[8] && displayXO[6] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[6] + ' Wins!';
         matchedIndexes.addAll([6, 7, 8]);
@@ -213,9 +206,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check 1st column
-    if (displayXO[0] == displayXO[3] &&
-        displayXO[0] == displayXO[6] &&
-        displayXO[0] != '') {
+    if (displayXO[0] == displayXO[3] && displayXO[0] == displayXO[6] && displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
         matchedIndexes.addAll([0, 3, 6]);
@@ -225,9 +216,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check 2nd column
-    if (displayXO[1] == displayXO[4] &&
-        displayXO[1] == displayXO[7] &&
-        displayXO[1] != '') {
+    if (displayXO[1] == displayXO[4] && displayXO[1] == displayXO[7] && displayXO[1] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[1] + ' Wins!';
         matchedIndexes.addAll([1, 4, 7]);
@@ -237,9 +226,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check 3rd column
-    if (displayXO[2] == displayXO[5] &&
-        displayXO[2] == displayXO[8] &&
-        displayXO[2] != '') {
+    if (displayXO[2] == displayXO[5] && displayXO[2] == displayXO[8] && displayXO[2] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[2] + ' Wins!';
         matchedIndexes.addAll([2, 5, 8]);
@@ -249,9 +236,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check diagonal
-    if (displayXO[0] == displayXO[4] &&
-        displayXO[0] == displayXO[8] &&
-        displayXO[0] != '') {
+    if (displayXO[0] == displayXO[4] && displayXO[0] == displayXO[8] && displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[0] + ' Wins!';
         matchedIndexes.addAll([0, 4, 8]);
@@ -261,9 +246,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // check diagonal
-    if (displayXO[6] == displayXO[4] &&
-        displayXO[6] == displayXO[2] &&
-        displayXO[6] != '') {
+    if (displayXO[6] == displayXO[4] && displayXO[6] == displayXO[2] && displayXO[6] != '') {
       setState(() {
         resultDeclaration = 'Player ' + displayXO[6] + ' Wins!';
         matchedIndexes.addAll([6, 4, 2]);
@@ -329,8 +312,7 @@ class _GameScreenState extends State<GameScreen> {
           )
         : ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
+                backgroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
             onPressed: () {
               startTimer();
               _clearBoard();

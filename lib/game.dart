@@ -12,7 +12,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  bool oTurn = true; // first player is O
+  bool oTurn = true;
   List<String> displayXO = ['', '', '', '', '', '', '', '', ''];
   List<int> matchedIndexes = [];
   int attempts = 0;
